@@ -15,25 +15,32 @@ def addFaces(name, dir):
         images.append(gray[y:y+h, x:x+w])
         labels.append(name)
 
-
-for folders in os.walk('Pictures'):
-    for folder in os.listdir('Pictures'):
-        for file in os.walk('Pictures/' + folder):
+for folders in os.walk('Training'):
+    for folder in os.listdir('Training'):
+        for file in os.walk('Training/' + folder):
+            print file
             arr = file[2]
             for img in arr:
                 if img != ".DS_Store":
-                    print 'Pictures/' + folder + '/' + img
-                    addFaces(folder, 'Pictures/' + folder + '/' + img)
+                    print 'Training/' + folder + '/' + img
+                    addFaces(folder, 'Training/' + folder + '/' + img)
+
+for index, l in enumerate(labels):
+    if l == 'Elon':
+        labels[index] = 0
+    else:
+        labels[index] = 1
 
 recognizer = cv2.face.createLBPHFaceRecognizer()
 
 recognizer.train(images, np.array(labels))
 
-for file in os.walk('Pictures/Test'):
-    print file[2]
+for file in os.walk('Testing'):
+    arr = file[2]
     for name in arr:
+        print name
         if name != ".DS_Store":
-            img = cv2.imread('Pictures/Test/' + name)
+            img = cv2.imread('Testing/' + name)
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, 1.3, 5)
             for (x,y,w,h) in faces:
